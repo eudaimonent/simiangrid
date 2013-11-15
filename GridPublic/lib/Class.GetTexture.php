@@ -96,13 +96,14 @@ class GetTexture implements IPublicService
         
         if (! empty($_SERVER['HTTP_RANGE']))
         {
-            if (preg_match('/bytes=([0-9]+)-([0-9]+)/',$_SERVER['HTTP_RANGE'],$rmatches))
+            if (preg_match('/bytes=([0-9]+)-([0-9]+)?/',$_SERVER['HTTP_RANGE'],$rmatches))
             {
                 $range[0] = $rmatches[1];
-                $range[1] = $rmatches[2];
+                $range[1] = (empty($rmatches[2]) ? $datalen - 1 : $rmatches[2]);
             }
             else
                 log_message('warn','[GetTexture] invalid range specification; ' . $_SERVER['HTTP_RANGE']);
+            // log_message('debug',sprintf('[GetTexture] request <%s>, respond <%d,%d>',$_SERVER['HTTP_RANGE'],$range[0],$range[1]));
         }
         else
             log_message('warn','[GetTexture] no range specification provided');
