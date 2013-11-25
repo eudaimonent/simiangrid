@@ -1,0 +1,10 @@
+<gridinfo>
+<login>@@LOGINURI@@</login>
+<register>@@GRIDFRONTEND@@</register>
+<welcome>@@GRIDFRONTEND@@</welcome>
+<password>@@GRIDFRONTEND@@</password>
+<gridname>@@GRIDNAME@@</gridname>
+<gridnick>@@GRIDNICKNAME@@</gridnick>
+<about>@@GRIDFRONTEND@@</about>
+<economy>@@GRIDFRONTEND@@</economy>
+</gridinfo>
