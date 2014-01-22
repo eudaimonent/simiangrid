@@ -225,7 +225,7 @@ function find_start_location($start, $lastLocation, $homeLocation, &$scene, &$st
         }
     }
     
-    if (preg_match('/^uri:([a-zA-Z0-9\s]+)&(\d+)&(\d+)&(\d+)$/', $start, $matches))
+    if (preg_match('/^uri:([a-zA-Z0-9\s-_]+)&(\d+)&(\d+)&(\d+)$/', $start, $matches))
     {
         log_message('debug', sprintf("Finding start location (custom: %s) for '%s'", $start, $matches[1]));
         
@@ -239,7 +239,7 @@ function find_start_location($start, $lastLocation, $homeLocation, &$scene, &$st
     }
     
     // Check to see if a valid default location has been set
-    if (preg_match('/^([a-zA-Z0-9\s]+)\/(\d+)\/(\d+)\/(\d+)$/', $defaultLocation, $matches))
+    if (preg_match('/^([a-zA-Z0-9\s-_]+)\/(\d+)\/(\d+)\/(\d+)$/', $defaultLocation, $matches))
     {
         log_message('debug', sprintf("Finding start location (default: %s) for '%s'", $defaultLocation, $matches[1]));
         
