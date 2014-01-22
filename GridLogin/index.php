@@ -457,6 +457,8 @@ function process_login($method_name, $params, $userID)
     $response['seed_capability'] = $seedCapability;
     $response['region_x'] = (string)$scene->MinPosition->X;
     $response['region_y'] = (string)$scene->MinPosition->Y;
+    $response['region_size_x'] = (string)($scene->MaxPosition->X - $scene->MinPosition->X);
+    $response['region_size_y'] = (string)($scene->MaxPosition->Y - $scene->MinPosition->Y);
     $response['look_at'] = sprintf("[r%s, r%s, r%s]", $startLookAt->X, $startLookAt->Y, $startLookAt->Z);
     // TODO: If a valid $homeLocation is set, we should be pulling region_handle / position / lookat out of it
     $response['home'] = sprintf("{'region_handle':[r%s, r%s], 'position':[r%s, r%s, r%s], 'look_at':[r%s, r%s, r%s]}",
