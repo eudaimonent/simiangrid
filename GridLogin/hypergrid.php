@@ -230,6 +230,8 @@ function hg_get_region($hguri, $id)
             'uuid' => $response['uuid'],
             'x' => $response['x'],
             'y' => $response['y'],
+	    'size_x' => isset($response['size_x']) ? $response['size_x'] : 256.0,
+	    'size_y' => isset($response['size_y']) ? $response['size_y'] : 256.0,
             'region_name' => $response['region_name'],
             'hostname' => $response['hostname'],
             'internal_port' => $response['internal_port'],
@@ -397,6 +399,8 @@ function get_region($method_name, $params, $user_data)
         $response['uuid'] = $scene->SceneID;
         $response['x'] = (string) $scene->MinPosition->X;
         $response['y'] = (string) $scene->MinPosition->Y;
+	$response['size_x'] = (string)($scene->MaxPosition->X - $scene->MinPosition->X);
+        $response['size_y'] = (string)($scene->MaxPosition->Y - $scene->MinPosition->Y);
         $response['region_name'] = $scene->Name;
         $response['server_uri'] = $scene->Address;
         $response['hostname'] = $scene->ExtraData['ExternalAddress'];
