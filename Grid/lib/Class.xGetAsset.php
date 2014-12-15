@@ -66,8 +66,10 @@ class xGetAsset implements IGridService
         }
         else
         {
+            log_message('info',"Asset $assetID not found");
+
             $response['Success'] = FALSE;
-            $response['Message'] = 'Asset not found';
+            $response['Message'] = "Asset $assetID not found";
         }
 
         header("Content-Type: application/json", true);

@@ -92,6 +92,7 @@ class xAddAsset implements IGridService
             }
             else
             {
+                log_message('warn','failed to create asset');
                 $response['Success'] = FALSE;
                 $response['Message'] = 'failed to create the asset';
             }
