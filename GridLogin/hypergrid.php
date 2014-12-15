@@ -611,16 +611,25 @@ function get_server_urls($method_name, $params, $user_data)
 /// Home and ForeignAgent Handlers
 ///////////////////////////////////////////////////////////////////////////////
 
+function decodedata($data)
+{
+    $encoding = isset($_SERVER['HTTP_X_CONTENT_ENCODING']) ? $_SERVER['HTTP_X_CONTENT_ENCODING'] : 'unknown'; 
+    $contenttype = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : 'unknown';
+    log_message('debug', sprintf("[hypergrid] content type %s and encoding %s", $contenttype, $encoding));
+
+    if ($encoding == 'gzip')
+    {
+        log_message('info',"[hypergrid] handling compressed foreign agent data");
+        return gzdecode($data);
+    }
+    return $data;
+}
+
 function foreignagent_handler($path_tail, $data)
 {
     log_message('info', "[hypergrid] foreignagent_handler called");
 
-    if (!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] == 'application/x-gzip')
-    {
-        log_message('info',"[hypergrid] handling compressed foreign agent data");
-        $data = gzdecode($data);
-    }
-    
+    $data = decodedata($data);
     $config =& get_config();
 
     $userid = $path_tail[0];
@@ -711,12 +720,8 @@ function foreignagent_handler($path_tail, $data)
 function homeagent_handler($path_tail, $data)
 {
     log_message('info', "[hypergrid] homeagent_handler called");
-    
-    if (!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] == 'application/x-gzip')
-    {
-        log_message('info',"[hypergrid] handling compressed foreign agent data");
-        $data = gzdecode($data);
-    }
+
+    $data = decodedata($data);
 
     $userid = $path_tail[0];
     log_message('info', "homeagent_handler called for $userid with $data");
