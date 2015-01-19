@@ -41,13 +41,21 @@ class AddIdentity implements IGridService
     {
         if (isset($params["Identifier"], $params["Credential"], $params["Type"], $params["UserID"]) && UUID::TryParse($params["UserID"], $this->UserID))
         {
-            $sql = "INSERT INTO Identities (Identifier, Credential, Type, UserID)
-                    VALUES (:Identifier, :Credential, :Type, :UserID)
-                    ON DUPLICATE KEY UPDATE Credential=VALUES(Credential), Type=VALUES(Type), UserID=VALUES(UserID)";
+            if( isset($params["Enabled"]) && $params["Enabled"] == False){
+                $parameters = array(':Identifier' => $params["Identifier"], ':Credential' => $params["Credential"], ':Type' => $params["Type"], ':UserID' => $this->UserID);
+                $sql = "INSERT INTO Identities (Identifier, Credential, Type, UserID, Enabled)
+                        VALUES (:Identifier, :Credential, :Type, :UserID, False)
+                        ON DUPLICATE KEY UPDATE Credential=VALUES(Credential), Type=VALUES(Type), UserID=VALUES(UserID), Enabled=VALUES(Enabled)";
+            } else {
+                $parameters = array(':Identifier' => $params["Identifier"], ':Credential' => $params["Credential"], ':Type' => $params["Type"], ':UserID' => $this->UserID);
+                $sql = "INSERT INTO Identities (Identifier, Credential, Type, UserID)
+                        VALUES (:Identifier, :Credential, :Type, :UserID)
+                        ON DUPLICATE KEY UPDATE Credential=VALUES(Credential), Type=VALUES(Type), UserID=VALUES(UserID), Enabled=1";
+            }
             
             $sth = $db->prepare($sql);
             
-            if ($sth->execute(array(':Identifier' => $params["Identifier"], ':Credential' => $params["Credential"], ':Type' => $params["Type"], ':UserID' => $this->UserID)))
+            if ($sth->execute($parameters))
             {
                 header("Content-Type: application/json", true);
                 echo '{ "Success": true }';

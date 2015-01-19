@@ -61,9 +61,7 @@ class GetGenerics implements IGridService
             }
             else
             {
-                header("Content-Type: application/json", true);
-                echo '{ "Message": "Invalid parameters" }';
-                exit();
+                $sql = "SELECT `OwnerID`, `Key`, `Value` FROM Generic WHERE `Type`=:Type";
             }
             
             $sth = $db->prepare($sql);

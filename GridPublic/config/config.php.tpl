@@ -71,13 +71,26 @@ $config["map_path"] = "";
 |--------------------------------------------------------------------------
 |
 | Leave this BLANK unless you would like to set something other than the default
-| map/ folder. Use a full server path with trailing slash. This directory should
-| map to the URL specified in $config['map_service'] above
+| textures/ folder. Use a full server path with trailing slash.
 |
 */
 $config["texture_path"] = "";
 $config["texture_split_size"] = 2;
 $config["texture_split_depth"] = 2;
+
+/*
+|--------------------------------------------------------------------------
+| Mesh Directory Path
+|--------------------------------------------------------------------------
+|
+| Leave this BLANK unless you would like to set something other than the default
+| meshes/ folder. Use a full server path with trailing slash.
+|
+*/
+$config["mesh_path"] = "";
+$config["mesh_split_size"] = 2;
+$config["mesh_split_depth"] = 2;
+
 
 /*
 |--------------------------------------------------------------------------
