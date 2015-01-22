@@ -64,7 +64,7 @@ class inventory_skel_lib
             
             // Get the items from the inventory folder
             $items = NULL;
-            if (! get_inventory_items($userID, $rootFolderID, 0, $items))
+            if (! get_inventory_items($userID, $rootFolderID, $items, 0, 1, 0))
             {
                 log_message('warn', '[inventory_skel_lib] failed to get library contents');
                 return array();
