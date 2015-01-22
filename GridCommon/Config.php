@@ -64,12 +64,18 @@ function &get_mimes()
     
     if (!isset($mime_conf))
     {
-        if (!file_exists(BASEPATH . 'config/mimes.php'))
+        if (file_exists(BASEPATH . 'config/mimes.php'))
+        {
+            require (BASEPATH . 'config/mimes.php');
+        }
+        else if (file_exists(COMMONPATH . 'mimes.php'))
+        {
+            require(COMMONPATH . 'mimes.php');
+        }
+        else
         {
             throw new Exception('The configuration file mimes.php does not exist.');
         }
-        
-        require (BASEPATH . 'config/mimes.php');
         
         if (!isset($mimes) or !is_array($mimes))
         {

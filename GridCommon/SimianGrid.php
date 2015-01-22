@@ -480,7 +480,7 @@ function get_assetmetadata($assetID, &$assetData)
 /////////////////////////////////////////////////////////////////
 // Inventory Functions
 /////////////////////////////////////////////////////////////////
-function get_inventory_items($userID, $folderID, $childrenOnly, &$items)
+function get_inventory_items($userID, $folderID, &$items, $childrenOnly = 0, $includeFolders = 1, $includeItems = 0)
 {
     $config =& get_config();
     $inventoryService = $config['inventory_service'];
@@ -489,8 +489,8 @@ function get_inventory_items($userID, $folderID, $childrenOnly, &$items)
         'RequestMethod' => 'GetInventoryNode',
         'ItemID' => $folderID,
         'OwnerID' => $userID,
-        'IncludeFolders' => '1',
-        'IncludeItems' => '0',
+        'IncludeFolders' => $includeFolders,
+        'IncludeItems' => $includeItems,
         'ChildrenOnly' => $childrenOnly));
 
     if (! empty($response['Success']) && is_array($response['Items']))
@@ -503,7 +503,7 @@ function get_inventory_items($userID, $folderID, $childrenOnly, &$items)
     return false;
 }
 
-function get_inventory($userID, &$rootFolderID, &$items)
+function get_inventory_skel($userID, &$rootFolderID, &$items)
 {
     $config =& get_config();
     $inventoryService = $config['inventory_service'];
@@ -511,23 +511,7 @@ function get_inventory($userID, &$rootFolderID, &$items)
     // This is always true in SimianGrid
     $rootFolderID = $userID;
 
-    $response = webservice_post($inventoryService, array(
-        'RequestMethod' => 'GetInventoryNode',
-        'ItemID' => $rootFolderID,
-        'OwnerID' => $userID,
-        'IncludeFolders' => '1',
-        'IncludeItems' => '0',
-        'ChildrenOnly' => '0')
-    );
-
-    if (!empty($response['Success']) && is_array($response['Items']))
-    {
-        $items = $response['Items'];
-        return true;
-    }
-
-    $items = null;
-    return false;
+    return(get_inventory_items($userID,$rootFolderID,$items,0,1,0));
 }
 
 /////////////////////////////////////////////////////////////////

@@ -39,6 +39,8 @@ $gMethodName = "(Unknown)";
 
 define('COMMONPATH', str_replace("\\", "/", realpath(dirname(__FILE__) . '/..') . '/GridCommon/'));
 define('BASEPATH', str_replace("\\", "/", realpath(dirname(__FILE__)) . '/'));
+define('URLBASE', str_replace($_SERVER['DOCUMENT_ROOT'],"",BASEPATH));
+
 
 require_once(COMMONPATH . 'Config.php');
 require_once(COMMONPATH . 'Errors.php');
@@ -49,6 +51,10 @@ require_once(COMMONPATH . 'Vector3.php');
 require_once(COMMONPATH . 'Curl.php');
 require_once(COMMONPATH . 'Capability.php');
 require_once(COMMONPATH . 'SimianGrid.php');
+
+require_once(COMMONPATH . 'llsd/llsd_classes.php');
+require_once(COMMONPATH . 'llsd/llsd_encode.php');
+require_once(COMMONPATH . 'llsd/llsd_decode.php');
 
 // -----------------------------------------------------------------
 // Performance profiling/logging
@@ -123,8 +129,8 @@ $capability = null;
 $operation = null;
 $request = null;
 
-$cappattern='@^/GridPublic/CAP/([^/?]+)/([^/]+)/?(\?.*)?$@';
-$nocappattern='@^/GridPublic/([^/?]+)/?(\?.*)?$@';
+$cappattern='@^' . URLBASE . 'CAP/([^/?]+)/([^/]+)/?(\?.*)?$@';
+$nocappattern='@^' . URLBASE . '([^/?]+)/?(\?.*)?$@';
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
@@ -152,6 +158,8 @@ else if ($_SERVER['REQUEST_METHOD'] == 'POST')
     if (!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded')
     {
         $request = $_REQUEST;
+        $capability = trim($request['cap']);
+        $operation = trim($request['RequestMethod']);
     }
     else if ($_SERVER['CONTENT_TYPE'] == 'application/json')
     {
@@ -161,6 +169,8 @@ else if ($_SERVER['REQUEST_METHOD'] == 'POST')
         if ($json)
         {
             $request = $json;
+            $capability = trim($request['cap']);
+            $operation = trim($request['RequestMethod']);
         }
         else
         {
@@ -170,9 +180,43 @@ else if ($_SERVER['REQUEST_METHOD'] == 'POST')
             RequestFailed('Error decoding JSON request');
         }
     }
+    else if ($_SERVER['CONTENT_TYPE'] == 'application/llsd+xml')
+    {
+        $requestURI = preg_replace('@/+@','/',$_SERVER["REQUEST_URI"]);
+        if (preg_match($cappattern,$requestURI,$capmatches))
+        {
+            $capability = $capmatches[1];
+            $operation = $capmatches[2];
+        }
+        else if (preg_match($nocappattern,$requestURI,$capmatches))
+        {
+            $operation = $capmatches[1];
+            $request = $_REQUEST;
+        }
+        else
+        {
+            log_message('warn', 'Invalid request: ' . $requestURI);
 
-    $capability = trim($request['cap']);
-    $operation = trim($request['RequestMethod']);
+            RequestFailed(sprintf('Invalid llsd request format; %s in %s',$requestURI,$xp));
+        }
+
+        $data = file_get_contents("php://input");
+        $llsd = llsd_decode($data);
+        if ($llsd)
+        {
+            $request = $llsd;
+        }
+        else
+        {
+            log_message('warn', "Error decoding LLSD request");
+            RequestFailed('Error decoding LLSD request');
+        }
+    }
+    else
+    {
+        log_message('warn', "unknown post request type " . $_SERVER['CONTENT_TYPE']);
+        RequestFailed('Error decoding request');
+    }
 }
 
 log_message('debug',sprintf("cap=%s, op=%s, request=%s",$capability,$operation,json_encode($request)));

@@ -114,7 +114,7 @@ function get_inventory_folder_by_path($userID, &$folderID, $path)
         return true;
 
     $folders = NULL;
-    if (get_inventory_items($userID, $folderID, 1, $folders))
+    if (get_inventory_items($userID, $folderID, $folders, 1, 1, 0))
     {
         $pathelem = array_shift($path);
         foreach ($folders as $folder)

@@ -69,7 +69,10 @@
         $result['password'] = $_SESSION['db_config']['password'];
         $result['host'] = $_SESSION['db_config']['host'];
         $result['db'] = $_SESSION['db_config']['db'];
-        
+
+	$user = $result['user'];
+	$db = $result['db'];
+ 
         if ( $user != null && $db != null ) {
             $result = TRUE;
         }
