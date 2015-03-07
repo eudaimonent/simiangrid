@@ -623,10 +623,10 @@ function get_server_urls($method_name, $params, $user_data)
 /// Home and ForeignAgent Handlers
 ///////////////////////////////////////////////////////////////////////////////
 
-function gzdecode($data)
-{	
-	return gzinflate(substr($data,10,-8));
-}
+//function gzdecode($data) //R.I.P. php 5.3
+//{	
+//	return gzinflate(substr($data,10,-8));
+//}
 
 function decodedata($data)
 {
